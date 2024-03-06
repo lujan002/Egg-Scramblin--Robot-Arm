@@ -1,4 +1,4 @@
-# Egg Scramblin' Robot Arm
+# Robot Arm Egg Scrambler
 
 ### This repo is a work-in-progress
 
