@@ -38,7 +38,7 @@ def save_urls_to_csv(image_urls):
     df = pd.DataFrame({"links": image_urls})
     df.to_csv("links.csv", index=False, encoding="utf-8")
 
-import base64
+# import base64
 
 def get_and_save_image_to_file(image_url, output_dir):
     try:
@@ -53,19 +53,19 @@ def get_and_save_image_to_file(image_url, output_dir):
         print(f"Error fetching image from URL '{image_url}': {e}")
         
 def main():
-    url = "https://www.istockphoto.com/photos/scrambled-eggs"
+    url = "https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=laptop&_sacat=0&LH_TitleDesc=0&_osacat=0&_odkw=laptop"
     content = get_content_from_url(url)
     image_urls = parse_image_urls(
         #Ebay Images
-        #content=content, classes="s-item__image-wrapper image-treatment", location="img", source="src"
+        content=content, classes="s-item__image-wrapper image-treatment", location="img", source="src"
         #Google Search Images
-        content=content, classes="wIvQgG_LtEHVMdJvOT7a", location="img", source="src"
+        #content=content, classes="wIvQgG_LtEHVMdJvOT7a", location="img", source="src"
     )
     save_urls_to_csv(image_urls)
 
     for image_url in image_urls:
         get_and_save_image_to_file(
-            image_url, output_dir=Path("/Users/20Jan/OneDrive - University of Kansas/Desktop/LJ/Elegoo/Robot Arm/Scrambled Egg Dataset")
+            image_url, output_dir=Path("Users/20Jan/Robot Arm Copy/Egg Scrambler Code/Scrambled Egg Dataset")
         )
         
 
