@@ -24,9 +24,11 @@ a2 = 155.1  # length of arm2 in mm
 
 # Define circular path parameters
 # x-axis will be axis extenting from robot, y-axis will be left or right, z-axis will be up or down  
-x_center, y_center = 160, 0  # Center of the pan measured from robot base
+x_center, y_center = 120, 0  # Center of the pan measured from robot base
+# operating height
 z = 20  
- # operating height
+# height above the pan which the spatula will maneuver about
+z_increase = 90
 
 larger_radius = 90
 smaller_radius = 90
@@ -115,10 +117,13 @@ def inverse_kinematics(x, y, z, a1, a2):
 
 # Alternate moving around big and little circle
 def perform_circular_motion():
-    global theta, pan_radius, spin_dir
+    global theta, z, pan_radius, spin_dir
     # start at the right of the pan
     send_to_arduino(45, -21, 90, 180)
-    time.sleep(0.5)
+    # start with spatual raised
+    # theta1, theta2, theta3 = inverse_kinematics(x_center+pan_radius, y_center, z+z_increase, a1, a2)
+    # send_to_arduino(theta1, theta2, theta3, 180)
+    # time.sleep(0.5)
     while True:  # Loop to keep the motion continuous until stopped
         print("theta:", theta)
         theta1, theta2, theta3, theta4 = update_movement(theta)
@@ -240,9 +245,8 @@ def swipe_pan(x, y, z, theta, theta4):
         z_steps = 6
         # Set parameter to conrol how far swipe goes (ie. 0.5 ends in middle of pan, 0.75 is three-quarters, 1.0 swipes entire pan, not ideal for splashing)
         swipe_dist_horz = 0.5
-        swipe_dist_vert = 0.75
+        swipe_dist_vert = 0.6
         # Function to lift the spatula up, move a few degrees, and drop down before spinning in other direction inorder to capture eggs that pile up on right side
-        z_increase = 90
         raise_spatula(x, y, z, z_increase, z_steps, theta4)
         if theta == 100-20*spin_dir: # swipe top > bottom
             theta += 20*spin_dir
@@ -251,7 +255,7 @@ def swipe_pan(x, y, z, theta, theta4):
             theta1, theta2, theta3 = inverse_kinematics(x, y, z+z_increase, a1, a2) # is it necessary to use x_center, y_top, or just x and y???
             send_to_arduino(theta1, theta2, theta3, theta4)
             time.sleep(0.3)
-            drop_spatula(x, y+30, z_increase, z_increase, z_steps, theta4) # moving y so that it is closer to the edge of the pan (emperical observation)
+            drop_spatula(x, y+20, z_increase, z_increase, z_steps, theta4) # moving y so that it is closer to the edge of the pan (emperical observation)
             for _ in range(steps):
                 ytop -= ((pan_radius*2)/steps)*swipe_dist_vert 
                 theta1, theta2, theta3 = inverse_kinematics(x, ytop, z, a1, a2) # is it necessary to use x_center, y_top, or just x and y???
@@ -279,7 +283,7 @@ def swipe_pan(x, y, z, theta, theta4):
             # raise_spatula(xl, y, z, z_increase, z_steps, theta4)
             # time.sleep(0.3)
             # drop_spatula(xl+20, y, z_increase, z_increase, z_steps, theta4)
-            spin_middle(60, theta1, theta2, theta3, theta4)
+            spin_middle(35, theta1, theta2, theta3, theta4)
             raise_spatula(x, y, z, z_increase, z_steps, theta4)
             # time.sleep(0.3)
             for _ in range(steps):
@@ -295,7 +299,7 @@ def swipe_pan(x, y, z, theta, theta4):
             theta1, theta2, theta3 = inverse_kinematics(x, y, z+z_increase, a1, a2) # is it necessary to use x_center, y_top, or just x and y???
             send_to_arduino(theta1, theta2, theta3, theta4)
             time.sleep(0.3)
-            drop_spatula(x, y-30, z_increase, z_increase, z_steps, theta4)  # moving y so that it is closer to the edge of the pan (emperical observation)
+            drop_spatula(x, y-(-10), z_increase, z_increase, z_steps, theta4)  # moving y so that it is closer to the edge of the pan (emperical observation)
             for _ in range(steps):
                 ybot += ((pan_radius*2)/steps)*swipe_dist_vert
                 theta1, theta2, theta3 = inverse_kinematics(x, ybot, z, a1, a2)
@@ -329,7 +333,7 @@ def swipe_pan(x, y, z, theta, theta4):
             # raise_spatula(xr, y, z, z_increase, z_steps, theta4)
             # time.sleep(0.3)
             # drop_spatula(xr-20, y, z_increase, z_increase, z_steps, theta4)
-            spin_middle(60, theta1, theta2, theta3, theta4)
+            spin_middle(35, theta1, theta2, theta3, theta4)
             raise_spatula(x, y, z, z_increase, z_steps, theta4)
             # time.sleep(0.3)
             for _ in range(steps):
@@ -341,6 +345,8 @@ def swipe_pan(x, y, z, theta, theta4):
         # time.sleep(0.3)
         drop_spatula(x, y, z_increase, z_increase, z_steps, theta4)
         theta4 = theta4_og
+        # theta += 80*spin_dir
+        # update_movement(theta)
         theta1, theta2, theta3 = inverse_kinematics(x, y, z+z_increase, a1, a2)
         send_to_arduino(theta1, theta2, theta3, theta4)
         
@@ -350,7 +356,7 @@ def spin_middle(steps, theta1, theta2, theta3, theta4):
     
     for _ in range(steps):
         # Update theta4 based on direction
-        theta4 += 5 * direction
+        theta4 += 10 * direction
         
         # If theta4 hits the upper limit, change direction to decrease
         if theta4 >= 180:
@@ -362,7 +368,6 @@ def spin_middle(steps, theta1, theta2, theta3, theta4):
             direction = 1
             
         send_to_arduino(theta1, theta2, theta3, theta4)
-    time.sleep(0.3)
 
 #%%
 '''
