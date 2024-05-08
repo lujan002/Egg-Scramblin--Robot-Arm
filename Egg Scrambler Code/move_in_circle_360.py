@@ -15,8 +15,8 @@ import time
 import serial
 
 # Connect to Arduino
-# arduino = serial.Serial('COM4', 9600)  # For using windows
-arduino = serial.Serial('/dev/ttyACM0', 9600) # For using linux (Raspberry Pi)
+arduino = serial.Serial('COM4', 9600, timeout=2)  # For using windows
+# arduino = serial.Serial('/dev/ttyACM0', 9600) # For using linux (Raspberry Pi)
 time.sleep(2) # wait for the serial connection to initialize
 
 # Constants for arm lengths
