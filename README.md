@@ -33,6 +33,13 @@ I have programmed the spatula to move in a circle ensuring it remains tangent to
 ## Cooked Egg Detection Software
 In order to make the robot truly autonomous, a way to detect the eggs when cooked was necessary. A novel addition to this project was the task of training a machine learning model to take images from a camera stream and use this to predict if the picture it sees is cooked or uncooked. 
 
+<p align="center">
+  <img src="CookedDataset.png" alt="CookedDataset" width="50%" height="auto">
+</p>
+<p align="center">
+  <img src="UncookedDataset.png" alt="UncookedDataset" width="50%" height="auto">
+</p>
+
 Future objectives include:
 enhancing the spatula's path for consistent egg contact
 integrating a machine learning-based vision system to determine when the eggs are fully cooked
